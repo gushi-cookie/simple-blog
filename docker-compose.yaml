@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  backend:
+    container_name: backend
+    build: ./services/backend/
+    ports:
+      - 8080:80
+    volumes:
+      - ./services/backend:/app
+    depends_on:
+      - postgres
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PORT: ${DB_PORT}
+      DB_PASS: ${DB_PASS}
+      DB_DIALECT: ${DB_DIALECT}
+      PORT: ${BACKEND_PORT}
+      SECRET_TOKEN: ${JWT_SECRET_TOKEN}
+  postgres:
+    container_name: postgres
+    image: postgres:15.3
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
