@@ -1,10 +1,24 @@
 version: "3.9"
 services:
+  nginx:
+    container_name: nginx
+    build: ./services/nginx
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+      args:
+        - "PORT=${FRONTEND_PORT}"
+    volumes:
+      - ./services/frontend:/app
+  
   backend:
     container_name: backend
     build: ./services/backend/
-    ports:
-      - 8080:80
     volumes:
       - ./services/backend:/app
     depends_on:
@@ -18,6 +32,7 @@ services:
       DB_DIALECT: ${DB_DIALECT}
       PORT: ${BACKEND_PORT}
       SECRET_TOKEN: ${JWT_SECRET_TOKEN}
+  
   postgres:
     container_name: postgres
     image: postgres:15.3
