@@ -8,6 +8,9 @@ services:
 
   frontend:
     container_name: frontend
+    user: "${UID}:${GID}"
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     build:
       context: ./services/frontend
       dockerfile: Dockerfile
@@ -18,6 +21,7 @@ services:
   
   backend:
     container_name: backend
+    user: "${UID}:${GID}"
     build: ./services/backend/
     volumes:
       - ./services/backend:/app
@@ -35,6 +39,7 @@ services:
   
   postgres:
     container_name: postgres
+    user: "${UID}:${GID}"
     image: postgres:15.3
     volumes:
       - ./postgresql-data:/var/lib/postgresql/data
