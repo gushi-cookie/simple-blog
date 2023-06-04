@@ -3,6 +3,7 @@ services:
   nginx:
     container_name: nginx
     build: ./services/nginx
+    restart: always
     ports:
       - ${NGINX_PORT}:${NGINX_PORT}
 
@@ -13,16 +14,22 @@ services:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
     build:
       context: ./services/frontend
-      dockerfile: Dockerfile
+      target: ${BUILD_TARGET}
       args:
         - "PORT=${FRONTEND_PORT}"
+    restart: always
     volumes:
       - ./services/frontend:/app
   
   backend:
     container_name: backend
     user: "${UID}:${GID}"
-    build: ./services/backend/
+    build:
+      context: ./services/backend/
+      target: ${BUILD_TARGET}
+      args:
+        - "PORT=${BACKEND_PORT}"
+    restart: always
     volumes:
       - ./services/backend:/app
     depends_on:
@@ -41,6 +48,7 @@ services:
     container_name: postgres
     user: "${UID}:${GID}"
     image: postgres:15.3
+    restart: always
     volumes:
       - ./postgresql-data:/var/lib/postgresql/data
     environment:
