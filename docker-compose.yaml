@@ -2,7 +2,10 @@ version: "3.9"
 services:
   nginx:
     container_name: nginx
-    build: ./services/nginx
+    build:
+      context: ./services/nginx
+      args:
+        - "PORT=${NGINX_PORT}"
     restart: always
     ports:
       - ${NGINX_PORT}:${NGINX_PORT}
